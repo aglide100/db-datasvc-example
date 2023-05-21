@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package pb.unit.article;
+option go_package = "github.com/aglide100/db-datasvc-snippet/pb/unit/article";
+
+message Article {
+    string id = 1;
+    string content = 2;
+}

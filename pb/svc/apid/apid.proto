@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package pb.svc.apid;
+option go_package = "github.com/aglide100/db-datasvc-snippet/pb/svc/apid";
+
+import "pb/unit/article/article.proto";
+
+service ApidService {
+    rpc GetArticleList(GetArticleListReq) returns (GetArticleListRes);
+    rpc AddArticle(AddArticleReq) returns (AddArticleRes);
+    // Declare other svc 
+}
+
+message GetArticleListReq {
+    string id = 1;
+}
+
+message GetArticleListRes {
+    repeated unit.article.Article article = 1;
+}
+
+message AddArticleReq {
+    unit.article.Article article = 1;
+}
+
+message AddArticleRes {
+    string msg = 1;
+}

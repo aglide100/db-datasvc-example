@@ -1,0 +1,43 @@
+version: "3.5"
+
+services:
+    db:
+        build:
+            context: ./
+            dockerfile: ./cmd/db/Dockerfile
+        command: postgres -c 'max_connections=200'
+        ports:
+            - 8888:5432
+        environment:
+            - TZ=Asia/Seoul
+            - POSTGRES_DB=test
+            - POSTGRES_USER=table_admin
+            - POSTGRES_PASSWORD=HelloWorld
+            - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+        networks:
+            - docker-network
+    apid:
+        build:
+            context: ./
+            dockerfile: ./cmd/apid/Dockerfile
+        networks:
+            - docker-network
+        ports:
+            - 49999:49999
+        environment:
+            - TZ=Asia/Seoul
+            - DB_ADDR=${DB_ADDR}
+            - DB_PORT=${DB_PORT}
+            - DB_USER=${DB_USER}
+            - DB_PASSWORD=${DB_PASSWORD}
+            - DB_NAME=${DB_NAME}
+        depends_on:
+            - db
+networks:
+    docker-network:
+        driver: bridge
+
+volumes:
+    keys:
+        external:
+            name: keys
