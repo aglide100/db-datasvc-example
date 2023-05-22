@@ -8,7 +8,7 @@ import "pb/unit/article/article.proto";
 service ApidService {
     rpc GetArticleList(GetArticleListReq) returns (GetArticleListRes);
     rpc AddArticle(AddArticleReq) returns (AddArticleRes);
-    // Declare other svc 
+    // Add other svc in here
 }
 
 message GetArticleListReq {

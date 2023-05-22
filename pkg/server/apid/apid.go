@@ -26,9 +26,10 @@ func (s *ApidSrv)GetArticleList(ctx context.Context, in *pb_svc_apid.GetArticleL
 	newJob := request.Job{
 		Name: "test",
 		Action: func() error {
-			log.Printf("test func! in %s", in.Id)
+			log.Printf("job start! in %s", in.Id)
 			time.Sleep(time.Second*5)
-
+			log.Printf("job done! in %s", in.Id)
+			
 			return nil
 		},
 	}

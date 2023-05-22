@@ -1,7 +1,6 @@
 package worker
 
 import (
-	"context"
 	"log"
 
 	"github.com/aglide100/db-datasvc-snippet/pkg/request"
@@ -10,43 +9,43 @@ import (
 
 type Worker struct {
 	Queue *request.Queue
+	MaxConcurrent int
+	RunningJob chan struct{}
+	CompletedSignal chan bool
 }
 
-func NewWorker(queue *request.Queue,) *Worker {
+func NewWorker(queue *request.Queue, maxConcurrent int) *Worker {
 	return &Worker{
 		Queue: queue,
+		MaxConcurrent: maxConcurrent,
+		RunningJob: make(chan struct{}, maxConcurrent),
+		CompletedSignal: make(chan bool),
 	}
 }
 
-func (w *Worker) DoWork() bool {
-	_, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func (w *Worker) DoWork() {
 	for {
 		select {
 		case job := <-w.Queue.Jobs:
-		go func(job request.Job) {
-			err := job.Run()
-			if err != nil {
-				log.Printf(err.Error())
+			if len(w.RunningJob) < w.MaxConcurrent{
+				switch job.Type {
+				default:
+					go func(job request.Job) {
+						defer func() {
+							w.RunningJob <- struct{}{}
+						}()
+			
+						err := job.Run()
+						if err != nil {
+							log.Printf(err.Error())
+						}
+					}(job)
+				}
+			} else {
+				// TODO
+				log.Printf("Too many concurrent jobs. Job %s is queued.", job.Name)
 			}
-			cancel()
-		}(job)
+			
 		}
 	}
-	// for {
-	// 	// time.Sleep(time.Second*3)
-
-	// 	select {
-	// 	case <-w.Queue.Ctx.Done():
-	// 		log.Printf("Work done in queue %s", w.Queue.Name, w.Queue.Ctx.Err())
-	// 		return true
-	// 	case job := <-w.Queue.Jobs:
-	// 		err := job.Run()
-	// 		if err != nil {
-	// 			log.Printf(err.Error())
-	// 			continue
-	// 		} 
-	// 	}
-	// }
 }
