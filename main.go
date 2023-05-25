@@ -8,10 +8,10 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb_svc_apid "github.com/aglide100/db-datasvc-snippet/pb/svc/apid"
-	"github.com/aglide100/db-datasvc-snippet/pkg/request"
-	apidServer "github.com/aglide100/db-datasvc-snippet/pkg/server/apid"
-	"github.com/aglide100/db-datasvc-snippet/pkg/worker"
+	pb_svc_apid "github.com/aglide100/db-datasvc-example/pb/svc/apid"
+	"github.com/aglide100/db-datasvc-example/pkg/request"
+	apidServer "github.com/aglide100/db-datasvc-example/pkg/server/apid"
+	"github.com/aglide100/db-datasvc-example/pkg/worker"
 	"golang.org/x/sync/errgroup"
 )
 

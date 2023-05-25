@@ -3,7 +3,7 @@ package article
 import (
 	"log"
 
-	"github.com/aglide100/db-datasvc-snippet/pkg/model"
+	"github.com/aglide100/db-datasvc-example/pkg/model"
 	"github.com/go-playground/validator"
 )
 

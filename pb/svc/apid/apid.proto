@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package pb.svc.apid;
-option go_package = "github.com/aglide100/db-datasvc-snippet/pb/svc/apid";
+option go_package = "github.com/aglide100/db-datasvc-example/pb/svc/apid";
 
 import "pb/unit/article/article.proto";
 

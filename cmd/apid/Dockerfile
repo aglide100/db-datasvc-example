@@ -2,7 +2,7 @@ FROM golang:1.20 AS builder
 
 RUN apt update && apt install -y ca-certificates upx
 
-WORKDIR "/go/src/github.com/aglide100/db-datasvc-snippet/"
+WORKDIR "/go/src/github.com/aglide100/db-datasvc-example/"
 
 COPY go.mod .
 COPY go.sum .

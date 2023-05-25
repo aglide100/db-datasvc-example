@@ -2,8 +2,9 @@ package worker
 
 import (
 	"log"
+	"sync"
 
-	"github.com/aglide100/db-datasvc-snippet/pkg/request"
+	"github.com/aglide100/db-datasvc-example/pkg/request"
 )
 
 
@@ -11,7 +12,6 @@ type Worker struct {
 	Queue *request.Queue
 	MaxConcurrent int
 	RunningJob chan struct{}
-	CompletedSignal chan bool
 }
 
 func NewWorker(queue *request.Queue, maxConcurrent int) *Worker {
@@ -19,33 +19,45 @@ func NewWorker(queue *request.Queue, maxConcurrent int) *Worker {
 		Queue: queue,
 		MaxConcurrent: maxConcurrent,
 		RunningJob: make(chan struct{}, maxConcurrent),
-		CompletedSignal: make(chan bool),
 	}
 }
 
 func (w *Worker) DoWork() {
+	wg := new(sync.WaitGroup)
+	
+	wg.Add(w.MaxConcurrent+1) 
+
+    // completedSignal := make(chan request.Job)
+
+	go func()  {
+		wg.Wait()
+	}()
+
 	for {
+		log.Printf("current running job's count : %d", len(w.RunningJob))
 		select {
 		case job := <-w.Queue.Jobs:
-			if len(w.RunningJob) < w.MaxConcurrent{
-				switch job.Type {
+			select {
 				default:
+					log.Printf("waiting...")
+					// TODO add primary something...
+					// w.Queue.AddJob(job)
+				case w.RunningJob <- struct{}{}:
 					go func(job request.Job) {
 						defer func() {
-							w.RunningJob <- struct{}{}
+							if err := job.Run(); err != nil {
+								log.Printf("%v", err)
+							} else {
+								<-w.RunningJob
+								// wg.Done()
+							}
 						}()
-			
-						err := job.Run()
-						if err != nil {
-							log.Printf(err.Error())
-						}
+						
+						// completedSignal <- job
 					}(job)
-				}
-			} else {
-				// TODO
-				log.Printf("Too many concurrent jobs. Job %s is queued.", job.Name)
 			}
-			
 		}
+		
 	}
+	
 }

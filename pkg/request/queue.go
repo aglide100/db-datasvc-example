@@ -32,7 +32,6 @@ func NewQueue(name string) *Queue {
 }
 
 func (q *Queue) AddJobs(jobs []Job) {
-
 	for _, job := range jobs {
 		go func(job Job) {
 			q.AddJob(job)
@@ -50,15 +49,10 @@ func (q *Queue) AddJob(job Job) {
 func (j Job) Run() error {
 	log.Printf("Job running: %s", j.Name)
 	
-	errChan := make(chan error)
-	go func() {
-		err := j.Action()
-		errChan <- err
-	}()
-	
-	err := <-errChan
+	err := j.Action()
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("error in queue's Run(), %v", err)
+		return err
 	}
 	
 	return nil
